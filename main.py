@@ -70,14 +70,15 @@ def auth():
     request_data = request.get_json()
     email = request_data.get('email')
     password = request_data.get('password')
+
     if not email:
         LOG.error("No email provided")
         return jsonify({"message": "Missing parameter: email"}, 400)
     if not password:
         LOG.error("No password provided")
         return jsonify({"message": "Missing parameter: password"}, 400)
-    body = {'email': email, 'password': password}
 
+    body = {'email': email, 'password': password}
     user_data = body
 
     return jsonify(token=_get_jwt(user_data).decode('utf-8'))
@@ -90,13 +91,14 @@ def decode_jwt():
     """
     if not 'Authorization' in request.headers:
         abort(401)
+
     data = request.headers['Authorization']
     token = str.replace(str(data), 'Bearer ', '')
+
     try:
         data = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
     except: # pylint: disable=bare-except
         abort(401)
-
 
     response = {'email': data['email'],
                 'exp': data['exp'],
